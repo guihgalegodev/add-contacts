@@ -5,7 +5,6 @@ export default class AppPhone {
     this.nome = document.getElementById(nome);
     this.numero = document.getElementById(numero);
     this.result = document.getElementById(result);
-    this.contatosSalvos = [];
 
     this.events = ["touchstart", "click"];
   }
@@ -15,21 +14,47 @@ export default class AppPhone {
     this.numero.value = "";
   }
 
-  addContato(e) {
+ async addContato(e) {
     e.preventDefault();
     const newContato = this.criarContato();
-    if (typeof newContato === "string") window.alert(newContato);
-    else {
-      this.contatosSalvos.push(newContato);
-      console.log(`${nome.value} adicionado aos contatos`);
-      this.cleanInputs();
+
+    if (typeof newContato === "string") {
+      window.alert(newContato);
+      return;
     }
+
+    try {
+    // Envia o objeto novo contato em formato JSON para a API backend
+    const response = await fetch("http://localhost:3000/contatos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newContato), // Converte o objeto JS para String JSON
+    });
+    if (response.ok) {
+      const contatoSalvo = await response.json();
+      console.log(`${contatoSalvo.nome} adicionado aos contatos no backend!`);
+      this.cleanInputs();
+    } else {
+      const erro = await response.json();
+      window.alert(`Erro ao salvar contato: ${erro.erro}`);
+    }
+  } catch (error) {
+    console.error("Erro na conexão com a API:", error);
+    window.alert("Não foi possível conectar ao servidor backend.");
+  }
   }
 
-  mostrarContatosSalvos(e) {
+  async mostrarContatosSalvos(e) {
     e.preventDefault();
 
-    if (this.contatosSalvos.length > 0) {
+    const response = await fetch("http://localhost:3000/contatos");
+    
+    const contatos = await response.json();
+    console.log("Contatos retornados da API:", contatos);
+
+    if (contatos.length > 0) {
       const listaAntiga = document.querySelector(".lista-contatos");
       if (listaAntiga) {
         listaAntiga.remove();
@@ -37,11 +62,11 @@ export default class AppPhone {
       const divMostrarContatos = document.createElement("div");
       divMostrarContatos.classList.add("lista-contatos");
 
-      this.contatosSalvos.forEach((item) => {
+      contatos.forEach((contato) => {
         const contatoDiv = document.createElement("div");
         contatoDiv.classList.add("contato");
-        contatoDiv.innerHTML = `<p>Nome: ${item.nome}</p>
-        <p>Numero: ${item.numero}</p>`;
+        contatoDiv.innerHTML = `<p>Nome: ${contato.nome}</p>
+        <p>Numero: ${contato.numero}</p>`;
         divMostrarContatos.appendChild(contatoDiv);
       });
 
