@@ -25,7 +25,7 @@ export default class AppPhone {
 
     try {
     // Envia o objeto novo contato em formato JSON para a API backend
-    const response = await fetch("http://localhost:3000/contatos", {
+    const response = await fetch("https://api-contatos-29hi.onrender.com/contatos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,10 +49,10 @@ export default class AppPhone {
   async mostrarContatosSalvos(e) {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/contatos");
+    const response = await fetch("https://api-contatos-29hi.onrender.com/contatos");
     
     const contatos = await response.json();
-    console.log("Contatos retornados da API:", contatos);
+    // console.log("Contatos retornados da API:", contatos);
 
     if (contatos.length > 0) {
       const listaAntiga = document.querySelector(".lista-contatos");
