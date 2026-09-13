@@ -58,16 +58,19 @@ label {
 
 #results {
   background: #000;
-  /* padding: 0px; */
   height: 250px;
   border-radius: 4px;
   overflow-y: scroll;
 }
 
 .contato {
-  /* background: #06c9c9; */
+  border: 1px solid white;
+  margin: 15px;
   padding: 10px;
   margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .contato p:first-child {
@@ -77,4 +80,30 @@ label {
 .contato p {
   font-size: 1.25rem;
   margin-top: 10px;
+}
+
+.btns-contato button {
+  background: transparent;
+  border: 1px solid white;
+  margin-right: 10px;
+  border-radius: 4px;
+  padding: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btns-contato button:hover {
+  scale: 1.1;
+}
+
+.btns-contato button:first-child:hover {
+  border-color: #16e416;
+}
+
+.btns-contato button:last-child:hover {
+  border-color: #e41616;
+}
+
+.btns-contato img {
+  max-width: 25px;
 }

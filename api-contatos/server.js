@@ -10,6 +10,7 @@ app.use(express.json());
 
 // Banco de dados temporário na memória
 let contatos = [];
+let proximoId = 1;
 
 // ROTA 1: Salvar um novo contato (POST)
 app.post("/contatos", (req, res) => {
@@ -22,7 +23,7 @@ app.post("/contatos", (req, res) => {
 
   // Criar o objeto do contato com um ID único
   const novoContato = {
-    id: contatos.length + 1,
+    id: proximoId++,
     nome,
     numero,
   };
@@ -32,6 +33,22 @@ app.post("/contatos", (req, res) => {
 
   // Retornar o contato criado com status 201 (Created)
   return res.status(201).json(novoContato);
+});
+
+app.delete("/contatos/:id", (req, res) => {
+  const idDoContato = Number(req.params.id);
+
+  if (isNaN(idDoContato)) {
+    return res.status(400).json({ erro: "ID do contato inválido." });
+  }
+
+  const index = contatos.findIndex((c) => c.id === idDoContato);
+  if (index === -1) {
+    return res.status(404).json({ erro: "Contato não encontrado." });
+  }
+  contatos.splice(index, 1);
+  console.log(`Contato com ID ${idDoContato} removido com sucesso.`);
+  return res.status(200).json({ mensagem: "Contato deletado com sucesso!" });
 });
 
 // ROTA 2: Listar todos os contatos salvos (GET)
