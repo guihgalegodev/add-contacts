@@ -87,11 +87,41 @@ export default class AppPhone {
             const contNome = targetContato
               .querySelector(".nome")
               .innerText.replace("Nome: ", "");
+            const contNumero = targetContato
+              .querySelector(".numero")
+              .innerText.replace("Numero: ", "");
             if (
               contNome === contato.nome &&
+              contNumero === contato.numero &&
               btnTarget.className === "btn-deletar"
             ) {
               this.deletarContato(contato.id, targetContato.parentElement);
+            } else if (
+              contNome === contato.nome &&
+              btnTarget.className === "btn-editar"
+            ) {
+              console.log(contato);
+              const frmEdit = document.createElement("form");
+              frmEdit.classList.add("frm-edit");
+              frmEdit.innerHTML = `<input type="text" id="nomeAlt">
+              <input type="text" id="numeroAlt"> 
+              <button> Finalizar </button>`;
+              const bntEdit = frmEdit.querySelector("button");
+              const novoNome = frmEdit.querySelector("#nomeAlt");
+              const novoNumero = frmEdit.querySelector("#numeroAlt");
+              novoNome.value = contato.nome;
+              novoNumero.value = contato.numero;
+
+              document.body.appendChild(frmEdit);
+
+              bntEdit.addEventListener("click", (e) => {
+                e.preventDefault();
+                contato.nome = novoNome.value;
+                contato.numero = novoNumero.value;
+                console.log(contato);
+                frmEdit.remove();
+              });
+              // this.result.insertAdjacentElement("afterend", frmEdit);
             }
           });
         });
