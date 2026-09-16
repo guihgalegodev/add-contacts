@@ -78,7 +78,6 @@ export default class AppPhone {
         </div>`;
         divMostrarContatos.appendChild(this.contatoDiv);
         const btns = this.contatoDiv.querySelectorAll(".btns-contato button");
-        console.log(btns);
         btns.forEach((btn) => {
           btn.addEventListener("click", (e) => {
             // e.preventDefault();
