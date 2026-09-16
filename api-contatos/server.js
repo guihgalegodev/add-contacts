@@ -51,6 +51,35 @@ app.delete("/contatos/:id", (req, res) => {
   return res.status(200).json({ mensagem: "Contato deletado com sucesso!" });
 });
 
+app.put("/contatos/:id", (req, res) => {
+  const idDoContato = Number(req.params.id);
+
+  if (isNaN(idDoContato)) {
+    return res.status(400).json({ erro: "ID do contato inválido." });
+  }
+
+  const index = contatos.findIndex((c) => c.id === idDoContato);
+  if (index === -1) {
+    return res.status(404).json({ erro: "Contato não encontrado." });
+  }
+
+  // Extrai os novos valores recebidos no body da requisição
+  const { nome, numero } = req.body;
+
+  // Atualiza o contato no array mantendo o mesmo ID
+  contatos[index] = {
+    id: idDoContato,
+    nome: nome,
+    numero: numero,
+  };
+
+  console.log(`Contato com ID ${idDoContato} editado com sucesso.`);
+  return res.status(200).json({
+    mensagem: "Contato editado com sucesso!",
+    contato: contatos[index],
+  });
+});
+
 // ROTA 2: Listar todos os contatos salvos (GET)
 app.get("/contatos", (req, res) => {
   return res.json(contatos);

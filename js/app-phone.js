@@ -7,6 +7,8 @@ export default class AppPhone {
     this.result = document.getElementById(result);
 
     this.events = ["touchstart", "click"];
+
+    this.url = "https://api-contatos-29hi.onrender.com/contatos";
   }
 
   cleanInputs() {
@@ -25,16 +27,13 @@ export default class AppPhone {
 
     try {
       // Envia o objeto novo contato em formato JSON para a API backend
-      const response = await fetch(
-        "https://api-contatos-29hi.onrender.com/contatos",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newContato), // Converte o objeto JS para String JSON
+      const response = await fetch(this.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(newContato), // Converte o objeto JS para String JSON
+      });
       if (response.ok) {
         const contatoSalvo = await response.json();
         console.log(`${contatoSalvo.nome} adicionado aos contatos no backend!`);
@@ -52,9 +51,7 @@ export default class AppPhone {
   async mostrarContatosSalvos(e) {
     e.preventDefault();
 
-    const response = await fetch(
-      "https://api-contatos-29hi.onrender.com/contatos",
-    );
+    const response = await fetch(this.url);
 
     const contatos = await response.json();
     console.log("Contatos retornados da API:", contatos);
@@ -87,11 +84,40 @@ export default class AppPhone {
             const contNome = targetContato
               .querySelector(".nome")
               .innerText.replace("Nome: ", "");
+            const contNumero = targetContato
+              .querySelector(".numero")
+              .innerText.replace("Numero: ", "");
             if (
               contNome === contato.nome &&
+              contNumero === contato.numero &&
               btnTarget.className === "btn-deletar"
             ) {
               this.deletarContato(contato.id, targetContato.parentElement);
+            } else if (
+              contNome === contato.nome &&
+              btnTarget.className === "btn-editar"
+            ) {
+              const frmEdit = document.createElement("form");
+              frmEdit.classList.add("frm-edit");
+              frmEdit.innerHTML = `<input type="text" id="nomeAlt">
+              <input type="text" id="numeroAlt"> 
+              <button> Finalizar </button>`;
+              const bntEdit = frmEdit.querySelector("button");
+              const novoNome = frmEdit.querySelector("#nomeAlt");
+              const novoNumero = frmEdit.querySelector("#numeroAlt");
+              novoNome.value = contato.nome;
+              novoNumero.value = contato.numero;
+
+              document.body.appendChild(frmEdit);
+
+              bntEdit.addEventListener("click", (e) => {
+                e.preventDefault();
+                contato.nome = novoNome.value;
+                contato.numero = novoNumero.value;
+                this.editarContato(contato.id, contato);
+                frmEdit.remove();
+              });
+              // this.result.insertAdjacentElement("afterend", frmEdit);
             }
           });
         });
@@ -105,17 +131,41 @@ export default class AppPhone {
     }
   }
 
+  async editarContato(id, contatoEditado) {
+    console.log(id, contatoEditado);
+    try {
+      const response = await fetch(`${this.url}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contatoEditado),
+      });
+
+      // Só remove da tela se a API do Render confirmar o sucesso (status 200-299)
+      if (response.ok) {
+        console.log(`Contato ${id} editado com sucesso.`);
+      } else {
+        console.error(
+          "O servidor retornou um erro ao tentar editar:",
+          response.statusText,
+        );
+        alert("Não foi possível editar o contato no servidor.");
+      }
+    } catch (error) {
+      console.error("Erro ao conectar com a API:", error);
+      alert("Erro de rede. Verifique sua conexão ou se a API está ativa.");
+    }
+  }
+
   async deletarContato(id, element) {
     try {
-      const response = await fetch(
-        `https://api-contatos-29hi.onrender.com/contatos/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const response = await fetch(`${this.url}/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+      });
 
       // Só remove da tela se a API do Render confirmar o sucesso (status 200-299)
       if (response.ok) {
