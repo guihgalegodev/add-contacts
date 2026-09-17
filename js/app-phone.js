@@ -97,6 +97,8 @@ export default class AppPhone {
               contNome === contato.nome &&
               btnTarget.className === "btn-editar"
             ) {
+              const divEdit = document.createElement("div");
+              divEdit.classList.add("div-edit");
               const frmEdit = document.createElement("form");
               frmEdit.classList.add("frm-edit");
               frmEdit.innerHTML = `<input type="text" id="nomeAlt">
@@ -108,14 +110,20 @@ export default class AppPhone {
               novoNome.value = contato.nome;
               novoNumero.value = contato.numero;
 
-              document.body.appendChild(frmEdit);
+              divEdit.appendChild(frmEdit);
+              document.body.appendChild(divEdit);
 
               bntEdit.addEventListener("click", (e) => {
                 e.preventDefault();
                 contato.nome = novoNome.value;
                 contato.numero = novoNumero.value;
                 this.editarContato(contato.id, contato);
-                frmEdit.remove();
+                divEdit.remove();
+                this.atualizarNoFront(
+                  targetContato,
+                  novoNome.value,
+                  novoNumero.value,
+                );
               });
               // this.result.insertAdjacentElement("afterend", frmEdit);
             }
@@ -129,6 +137,13 @@ export default class AppPhone {
     } else {
       window.alert("Adicione ao menos um contato");
     }
+  }
+
+  atualizarNoFront(contato, novoNome, novoNumero) {
+    const name = contato.querySelector(".nome");
+    const numero = contato.querySelector(".numero");
+    name.innerText = `Nome: ${novoNome}`;
+    numero.innerText = `Numero: ${novoNumero}`;
   }
 
   async editarContato(id, contatoEditado) {
