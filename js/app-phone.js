@@ -101,8 +101,8 @@ export default class AppPhone {
               divEdit.classList.add("div-edit");
               const frmEdit = document.createElement("form");
               frmEdit.classList.add("frm-edit");
-              frmEdit.innerHTML = `<input type="text" id="nomeAlt">
-              <input type="text" id="numeroAlt"> 
+              frmEdit.innerHTML = `<input type="text" id="nomeAlt" maxlength="50">
+              <input type="text" id="numeroAlt" maxlength="11"> 
               <button> Finalizar </button>`;
               const bntEdit = frmEdit.querySelector("button");
               const novoNome = frmEdit.querySelector("#nomeAlt");
@@ -117,6 +117,11 @@ export default class AppPhone {
                 e.preventDefault();
                 contato.nome = novoNome.value;
                 contato.numero = novoNumero.value;
+                const checkNewString = this.vericarString(novoNumero.value);
+                if (checkNewString) {
+                  window.alert("No campo Numero digite apenas numeros");
+                  return;
+                }
                 this.editarContato(contato.id, contato);
                 divEdit.remove();
                 this.atualizarNoFront(
@@ -136,6 +141,15 @@ export default class AppPhone {
       return this.contatoDiv;
     } else {
       window.alert("Adicione ao menos um contato");
+    }
+  }
+
+  vericarString(numero) {
+    const arrayNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    for (let i = 0; i < numero.length; i++) {
+      if (!arrayNumbers.includes(numero[i])) {
+        return true;
+      }
     }
   }
 
@@ -203,6 +217,11 @@ export default class AppPhone {
   criarContato() {
     const nome = this.nome.value;
     const numero = this.numero.value;
+    const checkString = this.vericarString(numero);
+    if (checkString) {
+      window.alert("No campo Número: digite apenas numeros");
+      return;
+    }
 
     if (nome.length >= 3 && numero.length == 11) {
       return {
