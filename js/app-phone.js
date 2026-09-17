@@ -116,6 +116,11 @@ export default class AppPhone {
                 contato.numero = novoNumero.value;
                 this.editarContato(contato.id, contato);
                 frmEdit.remove();
+                this.atualizarNoFront(
+                  targetContato,
+                  novoNome.value,
+                  novoNumero.value,
+                );
               });
               // this.result.insertAdjacentElement("afterend", frmEdit);
             }
@@ -129,6 +134,13 @@ export default class AppPhone {
     } else {
       window.alert("Adicione ao menos um contato");
     }
+  }
+
+  atualizarNoFront(contato, novoNome, novoNumero) {
+    const name = contato.querySelector(".nome");
+    const numero = contato.querySelector(".numero");
+    name.innerText = `Nome: ${novoNome}`;
+    numero.innerText = `Numero: ${novoNumero}`;
   }
 
   async editarContato(id, contatoEditado) {
