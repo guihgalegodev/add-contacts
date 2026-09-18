@@ -127,6 +127,11 @@ label {
   border-radius: 6px;
 }
 
+.frm-edit label {
+  display: block;
+  margin-bottom: 10px;
+}
+
 .frm-edit input {
   width: 100%;
   display: block;

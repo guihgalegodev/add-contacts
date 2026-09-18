@@ -101,7 +101,10 @@ export default class AppPhone {
               divEdit.classList.add("div-edit");
               const frmEdit = document.createElement("form");
               frmEdit.classList.add("frm-edit");
-              frmEdit.innerHTML = `<input type="text" id="nomeAlt" maxlength="50">
+              frmEdit.innerHTML = `
+              <label for="nomeAlt">Nome</label>
+              <input type="text" id="nomeAlt" maxlength="50">
+              <label for="numeroAlt">Número</label>
               <input type="text" id="numeroAlt" maxlength="11"> 
               <button> Finalizar </button>`;
               const bntEdit = frmEdit.querySelector("button");
